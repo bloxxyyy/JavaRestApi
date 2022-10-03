@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="SpotitubeApp:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>SpotitubeApp</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="SpotitubeApp.war">
+      <element id="artifact" artifact-name="SpotitubeApp:war exploded" />
+    </root>
+  </artifact>
+</component>
