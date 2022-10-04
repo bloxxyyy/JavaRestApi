@@ -15,20 +15,20 @@ import java.util.stream.Collectors;
 
 public class PlaylistsServiceImpl implements PlayListService {
 
-    @Inject
     private Dao<Playlist> _playlistDao;
-
-    @Inject
     private Dao<Track> _trackDao;
-
-    @Inject
     private Dao<PlaylistTrack> _playlistTrackDao;
-
-    @Inject
     private Dao<Token> _tokenDao;
+    private PlaylistsMapper _mapper;
 
     @Inject
-    private PlaylistsMapper _mapper;
+    public PlaylistsServiceImpl(Dao<Playlist> playlistDao, Dao<Track> trackDao, Dao<PlaylistTrack> playlistTrackDao, Dao<Token> tokenDao, PlaylistsMapper mapper) {
+        _playlistDao = playlistDao;
+        _trackDao = trackDao;
+        _playlistTrackDao = playlistTrackDao;
+        _tokenDao = tokenDao;
+        _mapper = mapper;
+    }
 
     @Override
     public PlaylistsViewModel getPlaylistsWithTracks(String token) {
