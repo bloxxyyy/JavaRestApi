@@ -69,7 +69,7 @@ public class PlaylistsServiceImpl implements PlayListService {
         _playlistDao.update(entity);
     }
 
-    private void GetTracksByPlaylist(int playlistId, Playlist entity) {
+    public void GetTracksByPlaylist(int playlistId, Playlist entity) {
         var playlistTrack = new PlaylistTrack(-1, playlistId);
         ArrayList<Track> tracks = new ArrayList<>();
 

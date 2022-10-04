@@ -8,6 +8,7 @@ import nl.han.domainlayer.viewmodels.TrackViewModel;
 import nl.han.servicelayer.Entities.*;
 import nl.han.servicelayer.daos.*;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -24,11 +25,17 @@ public class PlaylistServiceTest {
     private PlaylistTrackDaoImpl _playlistTrackDao = Mockito.mock(PlaylistTrackDaoImpl.class);
     private TokenDAOImpl _tokenDao = Mockito.mock(TokenDAOImpl.class);
 
+    private PlaylistsServiceImpl _ps;
+
+    @BeforeEach
+    public void update() {
+        _ps = new PlaylistsServiceImpl(_playlistDao, _trackDao, _playlistTrackDao, _tokenDao, _mapper);
+    }
+
     @Test
     public void getAllPlaylistsTest() {
         //Arrange
         String token = "1234";
-        PlaylistsServiceImpl ps = new PlaylistsServiceImpl(_playlistDao, _trackDao, _playlistTrackDao, _tokenDao, _mapper);
 
         PlaylistViewModel toTest = new PlaylistViewModel();
         toTest.setId(1);
@@ -42,7 +49,7 @@ public class PlaylistServiceTest {
         when(_playlistDao.getAll()).thenReturn(playlists);
 
         //Act
-        var gottenPlaylists = ps.getPlaylistsWithTracks(token);
+        var gottenPlaylists = _ps.getPlaylistsWithTracks(token);
         var playlist = gottenPlaylists.getPlaylists()[0];
 
         //Assert
@@ -52,4 +59,20 @@ public class PlaylistServiceTest {
         Assertions.assertEquals(playlist.getOwner(), toTest.getOwner());
     }
 
+    @Test
+    public void getTracksTest() {
+        //Arrange
+        _ps = new PlaylistsServiceImpl(_playlistDao, _trackDao, _playlistTrackDao, _tokenDao, _mapper);
+        Playlist playlist = new Playlist(1, "test", "", null);
+
+        when(_playlistTrackDao.getAllBy(any(PlaylistTrack.class))).thenReturn(List.of(new PlaylistTrack[] {new PlaylistTrack(1, 1)}));
+        when(_trackDao.get(any(Track.class))).thenReturn(new Track(1, "title", "performer", 0, "album", 0, "date", "desc", false));
+
+        //Act
+        _ps.GetTracksByPlaylist(1, playlist);
+
+        //Assert
+        Assertions.assertEquals(playlist.getTracks()[0].getId(), 1);
+        Assertions.assertEquals(playlist.getTracks()[0].getTitle(), "title");
+    }
 }
