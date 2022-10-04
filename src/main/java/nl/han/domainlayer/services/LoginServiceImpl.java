@@ -12,18 +12,25 @@ import java.util.UUID;
 
 public class LoginServiceImpl implements LoginService {
 
-    @Inject
+    private UserMapper _mapper;
+
     private Dao<User> _userDao;
 
-    @Inject
     private Dao<Token> _tokenDao;
 
+    private ITokenGenerator _tokenGenerator;
+
     @Inject
-    private UserMapper _mapper;
+    public LoginServiceImpl(UserMapper mapper, Dao<User> userDao, Dao<Token> tokenDao, ITokenGenerator tokenGenerator) {
+        _mapper = mapper;
+        _userDao = userDao;
+        _tokenDao = tokenDao;
+        _tokenGenerator = tokenGenerator;
+    }
 
     @Override
     public TokenizedUserViewModel GetUser(UserViewModel userDto) {
-        var newToken = UUID.randomUUID().toString();
+        var newToken = _tokenGenerator.getToken();
 
         var user = _mapper.toUser(userDto);
         if (_userDao.get(user) == null) return null;
