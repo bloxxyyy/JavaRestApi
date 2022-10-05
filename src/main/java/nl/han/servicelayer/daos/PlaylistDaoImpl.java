@@ -11,9 +11,12 @@ import java.util.List;
 
 public class PlaylistDaoImpl implements Dao<Playlist> {
 
-    @Inject
     private SqlDatabase _database;
 
+    @Inject
+    public void SetDatabase(SqlDatabase database) {
+        _database = database;
+    }
     @Override
     public Playlist get(Playlist entity) {
         String sql = "SELECT * FROM playlist WHERE idPlaylist = ? LIMIT 1";
@@ -30,10 +33,8 @@ public class PlaylistDaoImpl implements Dao<Playlist> {
             return playlist;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-
-        return null;
     }
 
     @Override
@@ -47,7 +48,7 @@ public class PlaylistDaoImpl implements Dao<Playlist> {
             pstmt.executeUpdate();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -62,7 +63,7 @@ public class PlaylistDaoImpl implements Dao<Playlist> {
             pstmt.setInt(3, playlist.getId());
             pstmt.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -76,7 +77,7 @@ public class PlaylistDaoImpl implements Dao<Playlist> {
             pstmt.executeUpdate();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -94,14 +95,16 @@ public class PlaylistDaoImpl implements Dao<Playlist> {
             return playlists;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-
-        return null;
     }
 
     @Override
     public List<Playlist> getAllBy(Playlist playlist) {
-        return new ArrayList<>();
+        try (var conn = _database.GetConnection()) {
+            return new ArrayList<>();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

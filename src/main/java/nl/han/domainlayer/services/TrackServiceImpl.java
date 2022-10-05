@@ -6,6 +6,7 @@ import nl.han.domainlayer.viewmodels.TrackViewModel;
 import nl.han.domainlayer.viewmodels.TracksViewModel;
 import nl.han.servicelayer.Entities.Playlist;
 import nl.han.servicelayer.Entities.PlaylistTrack;
+import nl.han.servicelayer.Entities.Token;
 import nl.han.servicelayer.Entities.Track;
 import nl.han.servicelayer.daos.Dao;
 
@@ -14,17 +15,18 @@ import java.util.stream.Collectors;
 
 public class TrackServiceImpl implements TrackService {
 
-    @Inject
     private Dao<Playlist> _playlistDao;
-
-    @Inject
     private Dao<Track> _trackDao;
-
-    @Inject
     private Dao<PlaylistTrack> _playlistTrackDao;
+    private PlaylistsMapper _mapper;
 
     @Inject
-    private PlaylistsMapper _mapper;
+    public TrackServiceImpl(Dao<Playlist> playlistDao, Dao<Track> trackDao, Dao<PlaylistTrack> playlistTrackDao, PlaylistsMapper mapper) {
+        _playlistDao = playlistDao;
+        _trackDao = trackDao;
+        _playlistTrackDao = playlistTrackDao;
+        _mapper = mapper;
+    }
 
     @Override
     public TracksViewModel getTracksByPlaylist(int playlistId) {

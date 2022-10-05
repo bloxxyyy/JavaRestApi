@@ -1,29 +1,31 @@
 package nl.han.servicelayer.database;
 
+import jakarta.inject.Inject;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 
 public class SqlDatabase {
 
-    public Connection GetConnection() {
-        Properties connectionProps = new Properties();
-        connectionProps.put("user", "root");
-        connectionProps.put("password", "pass");
+    private DatabaseProperties _databaseProperties;
 
-        String db = "spotitube";
-        String host = "jdbc:mysql://localhost:3306" + "/" + db;
+    @Inject
+    public SqlDatabase(DatabaseProperties databaseProperties) {
+        _databaseProperties = databaseProperties;
+    }
 
-        Connection conn;
+    @Inject
+    public void setDatabaseProperties(DatabaseProperties databaseProperties) {
+        _databaseProperties = databaseProperties;
+    }
 
+    public Connection GetConnection() throws SQLException {
         try {
-            conn = DriverManager.getConnection(host, connectionProps);
+            return DriverManager.getConnection(_databaseProperties.connectionString());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-        return conn;
     }
 
 }

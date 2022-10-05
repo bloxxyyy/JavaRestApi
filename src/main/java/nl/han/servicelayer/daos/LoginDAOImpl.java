@@ -10,8 +10,12 @@ import java.util.List;
 
 public class LoginDAOImpl implements Dao<User> {
 
-    @Inject
     private SqlDatabase _database;
+
+    @Inject
+    public void SetDatabase(SqlDatabase database) {
+        _database = database;
+    }
 
     @Override
     public List<User> getAll() {
@@ -27,10 +31,8 @@ public class LoginDAOImpl implements Dao<User> {
             return users;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-
-        return null;
     }
 
     @Override
@@ -55,10 +57,8 @@ public class LoginDAOImpl implements Dao<User> {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-
-        return null;
     }
 
     @Override
@@ -83,10 +83,8 @@ public class LoginDAOImpl implements Dao<User> {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-
-        return null;
     }
 
     @Override
@@ -99,17 +97,23 @@ public class LoginDAOImpl implements Dao<User> {
             pstmt.setString(2, object.GetPassword());
             pstmt.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 
     @Override
     public void delete(User object) {
-
+        try (var conn = _database.GetConnection()) {
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
     public void add(User object) {
-
+        try (var conn = _database.GetConnection()) {
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

@@ -11,8 +11,12 @@ import java.util.List;
 
 public class TokenDAOImpl implements Dao<Token> {
 
-    @Inject
     private SqlDatabase _database;
+
+    @Inject
+    public void SetDatabase(SqlDatabase database) {
+        _database = database;
+    }
 
     @Override
     public Token get(Token entity) {
@@ -35,10 +39,8 @@ public class TokenDAOImpl implements Dao<Token> {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-
-        return null;
     }
 
     @Override
@@ -52,7 +54,7 @@ public class TokenDAOImpl implements Dao<Token> {
             pstmt.executeUpdate();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -66,22 +68,34 @@ public class TokenDAOImpl implements Dao<Token> {
             pstmt.setString(2, token.GetUsername());
             pstmt.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 
     @Override
     public void delete(Token token) {
+        try (var conn = _database.GetConnection()) {
 
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
     public List<Token> getAll() {
-        return null;
+        try (var conn = _database.GetConnection()) {
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
     public List<Token> getAllBy(Token token) {
-        return null;
+        try (var conn = _database.GetConnection()) {
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

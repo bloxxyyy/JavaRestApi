@@ -11,6 +11,7 @@ import nl.han.servicelayer.Entities.Track;
 import nl.han.servicelayer.daos.Dao;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
 import java.util.stream.Collectors;
 
 public class PlaylistsServiceImpl implements PlayListService {
@@ -48,7 +49,11 @@ public class PlaylistsServiceImpl implements PlayListService {
         var playlistTrack = new PlaylistTrack(-1, playlistId);
         var playlist = new Playlist(playlistId, null, "", null);
         var playListTracks =  _playlistTrackDao.getAllBy(playlistTrack);
-        playListTracks.forEach(plt -> _playlistTrackDao.delete(plt));
+
+        for (int i  = 0; i < playListTracks.size(); i++) {
+            _playlistTrackDao.delete(playListTracks.get(i));
+        }
+
         _playlistDao.delete(playlist);
     }
 

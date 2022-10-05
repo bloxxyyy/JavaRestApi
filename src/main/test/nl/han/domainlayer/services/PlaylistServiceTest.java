@@ -1,17 +1,18 @@
 package nl.han.domainlayer.services;
 
 import nl.han.domainlayer.mappers.PlaylistsMapper;
-import nl.han.domainlayer.mappers.UserMapper;
 import nl.han.domainlayer.viewmodels.PlaylistViewModel;
-import nl.han.domainlayer.viewmodels.PlaylistsViewModel;
 import nl.han.domainlayer.viewmodels.TrackViewModel;
 import nl.han.servicelayer.Entities.*;
 import nl.han.servicelayer.daos.*;
+import nl.han.servicelayer.database.DatabaseProperties;
+import nl.han.servicelayer.database.SqlDatabase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -74,5 +75,97 @@ public class PlaylistServiceTest {
         //Assert
         Assertions.assertEquals(playlist.getTracks()[0].getId(), 1);
         Assertions.assertEquals(playlist.getTracks()[0].getTitle(), "title");
+    }
+
+    @Test
+    public void AddTrackToPlaylistTest() {
+        //Arrange
+        String token = "1234";
+        PlaylistViewModel toTest = new PlaylistViewModel();
+        toTest.setId(1);
+        toTest.setName("test");
+        toTest.setOwner(true);
+        toTest.setTracks(new TrackViewModel[0]);
+
+        when(_tokenDao.get(any(Token.class))).thenReturn(new Token("owner", token));
+
+        var tracks = new ArrayList<Track>();
+
+        PlaylistDaoImpl playlistDao = new PlaylistDaoImpl()  {
+            @Override
+            public void add(Playlist playlist) {
+                var track = new Track(1, "", "", 0, "", 0, "", "", false);
+                tracks.add(track);
+            }
+        };
+
+        _ps = new PlaylistsServiceImpl(playlistDao, _trackDao, _playlistTrackDao, _tokenDao, _mapper);
+
+        //Act
+        _ps.addPlaylist(toTest, token);
+
+        //Assert
+        Assertions.assertEquals(tracks.size(), 1);
+    }
+
+    @Test
+    public void UpdatePlaylistTest() {
+        //Arrange
+        String token = "1234";
+        PlaylistViewModel toTest = new PlaylistViewModel();
+        toTest.setId(1);
+        toTest.setName("test");
+        toTest.setOwner(true);
+        toTest.setTracks(new TrackViewModel[0]);
+
+        String ToTestName = "ToSet";
+        boolean ToTestOwner = true;
+
+        when(_tokenDao.get(any(Token.class))).thenReturn(new Token("owner", token));
+
+        PlaylistDaoImpl playlistDao = new PlaylistDaoImpl()  {
+            @Override
+            public void update(Playlist playlist) {
+                toTest.setName(ToTestName);
+                toTest.setOwner(true);
+            }
+        };
+
+        _ps = new PlaylistsServiceImpl(playlistDao, _trackDao, _playlistTrackDao, _tokenDao, _mapper);
+
+        //Act
+        _ps.updatePlaylist(toTest, token);
+
+        //Assert
+        Assertions.assertEquals(ToTestName, toTest.getName());
+        Assertions.assertEquals(ToTestOwner, toTest.getOwner());
+    }
+
+    @Test
+    public void DeletePlaylistTest() {
+        //Arrange
+        var playlistTracks = new ArrayList<PlaylistTrack>();
+        var playlistTrack = new PlaylistTrack(1, 1);
+        playlistTracks.add(playlistTrack);
+
+        PlaylistTrackDaoImpl playlistTrackDao = new PlaylistTrackDaoImpl()  {
+            @Override
+            public void delete(PlaylistTrack playlistTrack) {
+                playlistTracks.remove(playlistTrack);
+            }
+
+            @Override
+            public ArrayList<PlaylistTrack> getAllBy(PlaylistTrack playlistTrack) {
+                return playlistTracks;
+            }
+        };
+
+        _ps = new PlaylistsServiceImpl(_playlistDao, _trackDao, playlistTrackDao, _tokenDao, _mapper);
+
+        //Act
+        _ps.deletePlaylistById(1);
+
+        //Assert
+        Assertions.assertEquals(0, playlistTracks.size());
     }
 }

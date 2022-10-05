@@ -13,12 +13,20 @@ import java.util.List;
 
 public class PlaylistTrackDaoImpl implements Dao<PlaylistTrack> {
 
-    @Inject
     private SqlDatabase _database;
+
+    @Inject
+    public void SetDatabase(SqlDatabase database) {
+        _database = database;
+    }
 
     @Override
     public PlaylistTrack get(PlaylistTrack entity) {
-        return null;
+        try (var conn = _database.GetConnection()) {
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
@@ -32,13 +40,17 @@ public class PlaylistTrackDaoImpl implements Dao<PlaylistTrack> {
             pstmt.executeUpdate();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 
     @Override
     public void update(PlaylistTrack playlistTrack) {
+        try (var conn = _database.GetConnection()) {
 
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
@@ -52,13 +64,17 @@ public class PlaylistTrackDaoImpl implements Dao<PlaylistTrack> {
             pstmt.executeUpdate();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 
     @Override
     public List<PlaylistTrack> getAll() {
-        return null;
+        try (var conn = _database.GetConnection()) {
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
@@ -82,9 +98,7 @@ public class PlaylistTrackDaoImpl implements Dao<PlaylistTrack> {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-
-        return null;
     }
 }

@@ -25,7 +25,6 @@ public class LoginResource {
             throw new AccountDoesNotExistException(NOT_AUTHORIZED);
         }
 
-
         return Response.status(200).entity(user).build();
     }
 }

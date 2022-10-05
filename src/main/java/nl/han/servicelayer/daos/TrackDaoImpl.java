@@ -13,9 +13,12 @@ import java.util.List;
 
 public class TrackDaoImpl implements Dao<Track> {
 
-    @Inject
     private SqlDatabase _database;
 
+    @Inject
+    public void SetDatabase(SqlDatabase database) {
+        _database = database;
+    }
 
     @Override
     public Track get(Track object) {
@@ -48,15 +51,16 @@ public class TrackDaoImpl implements Dao<Track> {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-
-        return null;
     }
 
     @Override
     public void add(Track track) {
-
+        try (var conn = _database.GetConnection()) {
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
@@ -78,14 +82,16 @@ public class TrackDaoImpl implements Dao<Track> {
             pstmt.setInt(9, track.getId());
             pstmt.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-
     }
 
     @Override
     public void delete(Track track) {
-
+        try (var conn = _database.GetConnection()) {
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
@@ -112,14 +118,16 @@ public class TrackDaoImpl implements Dao<Track> {
             return tracks;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-
-        return null;
     }
 
     @Override
     public List<Track> getAllBy(Track track) {
-        return null;
+        try (var conn = _database.GetConnection()) {
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }
